@@ -7,7 +7,7 @@
 - [Dev Usage](#dev-usage)
 - [Sources](#sources)
 
-## Overview
+## Project Info
 
 This contains the code for our Cloud Computing final project, Spring 2021.
 
@@ -33,10 +33,15 @@ cloud and distributed computing via Azure, we can utilize online computing power
 that may not be available on every retail computer, allowing for a more
 streamlined user experience across a wider audience.
 
-## Team Members
+### Team Members
 
 - Dustin Seger (segerde)
 - Jake Steuver (steuvej)
+
+### Agile Processes
+
+To view our use of the [Agile](https://www.agilealliance.org/agile101/) mindset,
+see the [separate documentation](docs/).
 
 ## Dev Usage
 
