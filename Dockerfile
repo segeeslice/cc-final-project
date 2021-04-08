@@ -42,15 +42,19 @@ RUN cd ~ && \
 
 # == End given dockerfile logic ==
 
-WORKDIR /app/
+COPY ./src/ /app/
 
-COPY ./src/ .
-
-# TODO: Add in our own scripts, as we write them.
-#       For now, runs a temporary example script
+# Do any further installs for face_recognition
 RUN cd /app/face_recognition/ && \
     pip3 install -r requirements.txt && \
     python3 setup.py install
 
-CMD cd /app/face_recognition/examples && \
-    python3 recognize_faces_in_pictures.py
+# Create the image directory
+RUN mkdir /app/images
+
+# Install any further pre-requisites from our end
+WORKDIR /app/
+RUN pip3 install -r requirements.txt
+
+# Final command
+CMD python3 live_facial_recognition.py
