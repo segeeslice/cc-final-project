@@ -54,7 +54,7 @@ see the [separate documentation](docs/).
 ### Installation
 
 ``` sh
-git clone
+git clone https://github.com/segeeslice/cc-final-project
 git submodule init
 git submodule update
 ```
