@@ -45,7 +45,27 @@ see the [separate documentation](docs/).
 
 ## Dev Usage
 
-*In progress...*
+### Prerequisites
+
+- `git`
+- `python3`
+- `docker`
+
+### Installation
+
+``` sh
+git clone
+git submodule init
+git submodule update
+```
+
+### Usage
+
+``` sh
+# With cwd as the base directory:
+docker build -t cc-final .
+docker run -it cc-final
+```
 
 ## Sources
 
