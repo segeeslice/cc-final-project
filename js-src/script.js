@@ -1,15 +1,8 @@
-// == CONSTANTS ==
-
-// Retrieve the video element from the calling HTML file
-const video = document.getElementById('video')
-
-let faceInterval = null
-
 // == METHODS ==
 
 // Start the video from a user camera
 // Browsers should prompt for device independently
-async function startVideo() {
+async function startVideo(videoEl) {
     let stream = null;
 
     try {
@@ -21,12 +14,12 @@ async function startVideo() {
         console.error(err)
     }
 
-    video.srcObject = stream
+    videoEl.srcObject = stream
 }
 
 // Stop the user camera video
-function stopVideo () {
-    let stream = video.srcObject
+function stopVideo (videoEl) {
+    let stream = videoEl.srcObject
     if (stream === null) return
 
     let tracks = stream.getTracks()
@@ -35,7 +28,7 @@ function stopVideo () {
         track.stop()
     }
 
-    video.srcObject = null
+    videoEl.srcObject = null
 }
 
 // Clear a canvas UI element
@@ -43,37 +36,43 @@ function clearCanvas (canvas) {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
 }
 
-// == MAIN CODE ==
+// Load all the necessary models for faceapi
+// Each should correspond to a file under models/
+// Returns a promise
+function loadFaceApiModels () {
+    return Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+    ])
+}
 
-// Import facial recognition models and start the video once we're ready
-Promise.all([
-    faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-    faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-    faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-]).then(startVideo)
-
-// Once the models are loaded and the video is playing, begin the additional
-// facial recognition
-video.addEventListener('play', () => {
-    // Create and add an HTML element to the page for displaying the facial
-    // recognition details
-    const canvas = faceapi.createCanvasFromMedia(video)
+// Get a canvas to perfectly overlap the given video element
+function getOverlappingCanvas(videoEl) {
+    // Create the canvas
+    const canvas = faceapi.createCanvasFromMedia(videoEl)
     document.body.append(canvas)
 
-    const displaySize = { width: video.width, height: video.height }
+    // Match canvas dimensions with the given video element
+    const displaySize = { width: videoEl.width, height: videoEl.height }
     faceapi.matchDimensions(canvas, displaySize)
 
-    // Set the global facial detection interval
+    return canvas
+}
+
+// Start facial detection on a video element with the given overlapping canvas
+function startFacialDetection(videoEl) {
+    const displaySize = { width: videoEl.width, height: videoEl.height }
+    const canvas = getOverlappingCanvas(videoEl)
+
     // Can later be cancelled via clearAsyncInterval
-    faceInterval = setAsyncInterval(async () => {
+    let faceInterval = setAsyncInterval(async () => {
         // Detect via a smaller, faster (less accurate) model
         const detector = new faceapi.TinyFaceDetectorOptions()
 
         // Get all faces in the frame with any additional settings
-        const detections = await faceapi.detectAllFaces(video, detector)
-                                        .withFaceLandmarks()
-                                        .withFaceExpressions()
+        const detections = await faceapi.detectAllFaces(videoEl, detector)
 
         // Clear the canvas on each iteration
         clearCanvas(canvas)
@@ -84,4 +83,32 @@ video.addEventListener('play', () => {
         // Finally, draw the resultant detections
         faceapi.draw.drawDetections(canvas, resizedDetections)
     }, 50)
-})
+
+    // Return details in an object for later clearing
+    return { faceInterval, canvas }
+}
+
+// Stop facial detection and clear canvas
+function stopFacialDetection ({ canvas, faceInterval}) {
+    clearAsyncInterval(faceInterval)
+    clearCanvas(canvas)
+}
+
+// == MAIN CODE ==
+
+// Retrieve the video element from the calling HTML file
+const videoEl = document.getElementById('video')
+
+// Load models and start facial detection
+loadFaceApiModels()
+    .then(() => {
+        startVideo(videoEl)
+        // To stop:
+        // stopVideo(videoEl)
+
+        video.addEventListener('play', () => {
+            let detectObj = startFacialDetection(videoEl)
+            // To stop:
+            // stopFacialDetection(detectObj)
+        })
+    })
