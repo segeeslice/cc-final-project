@@ -94,14 +94,17 @@ async function startFacialDetection(videoEl) {
         // Draw each found face with our guess as to who it is
         clearCanvas(canvas)
         results.forEach((result, i) => {
+            // Contains "{label} ({confidence score})"
+            const rawLabel = result.toString()
+
+            // Remove confidence score from label
+            const label = rawLabel.match(/[^()]+/)[0].trim()
+
+            // Draw resulting system
             const box = resizedDetections[i].detection.box
-            const label = result.toString()
             const drawBox = new faceapi.draw.DrawBox(box, { label })
             drawBox.draw(canvas)
         })
-
-        // // Finally, draw the resultant detections
-        // faceapi.draw.drawDetections(canvas, resizedDetections)
     }, 50)
 
     // Return details in an object for later clearing
