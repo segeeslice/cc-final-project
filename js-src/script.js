@@ -63,12 +63,12 @@ function getOverlappingCanvas(videoEl) {
 }
 
 // Start facial detection on a video element with the given overlapping canvas
-async function startFacialDetection(videoEl) {
+async function startFacialDetection(videoEl, referenceImagePaths) {
     const displaySize = { width: videoEl.width, height: videoEl.height }
     const canvas = getOverlappingCanvas(videoEl)
 
     console.log('Loading reference images...')
-    const labeledFaceDescriptors = await loadReferenceImages('./images')
+    const labeledFaceDescriptors = await loadReferenceImages(referenceImagePaths)
     console.log('Making face matcher system...')
     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
     console.log('Complete. Launching live facial detection...')
@@ -117,25 +117,60 @@ function stopFacialDetection ({ canvas, faceInterval}) {
     clearCanvas(canvas)
 }
 
+function getFileName (fullPath) {
+    return fullPath.match(/[^\/]*$/)[0]
+}
+
+function getFileExt (fileName) {
+    return fileName.match(/\..*$/)[0]
+}
+
+function removeFileExt (fileName) {
+    const ext = getFileExt(fileName)
+    return fileName.slice(0, fileName.length - ext.length)
+}
+
 // Load all reference images for facial recognition
-// basepath argument should correlate to a directory containing all labeled
-// images
 // Label for each image are simply taken from image name
-// NOTE: this is a WIP! Proof-of-concept at the moment
-async function loadReferenceImages (basepath) {
-    const img = await faceapi.fetchImage('./images/Seg.png')
-    const detections = await faceapi.detectSingleFace(img)
-                                    .withFaceLandmarks()
-                                    .withFaceDescriptor()
-    const descriptions = []
-    descriptions.push(detections.descriptor)
-    return new faceapi.LabeledFaceDescriptors('Dustin', descriptions)
+// paths is a list of all image paths to load
+// NOTE: Could make this instead to load multiple references per image
+//       However this would probably require this to be ran as a Node app
+async function loadReferenceImages (paths) {
+    const descriptors = []
+
+    for (const i in paths) {
+        const path = paths[i]
+        try {
+            // Fetch the image and detect the most prominant face
+            const img = await faceapi.fetchImage(path)
+            const detections = await faceapi.detectSingleFace(img)
+                                            .withFaceLandmarks()
+                                            .withFaceDescriptor()
+
+            // Label the descriptor and keep track of it
+            const label = removeFileExt(getFileName(path))
+            const labeledDescriptor = new faceapi.LabeledFaceDescriptors(label, [detections.descriptor])
+            descriptors.push(labeledDescriptor)
+
+        } catch (e) {
+            console.log(`Could not load image at ${path}: ${e}`)
+        }
+    }
+
+    return descriptors
 }
 
 // == MAIN CODE ==
 
 // Retrieve the video element from the calling HTML file
 const videoEl = document.getElementById('video')
+
+// Temporarily utilize hard-coded test images
+const referenceImagePaths = [
+    './images/Seg.png',
+    './images/Dustin.jpg',
+    './images/Mo.png'
+]
 
 // Load models and start facial detection
 loadFaceApiModels()
@@ -145,7 +180,7 @@ loadFaceApiModels()
         // stopVideo(videoEl)
 
         video.addEventListener('play', async () => {
-            let detectObj = await startFacialDetection(videoEl)
+            let detectObj = await startFacialDetection(videoEl, referenceImagePaths)
 
             // To stop:
             // stopFacialDetection(detectObj)
