@@ -34,12 +34,19 @@
 
 1. Make proof-of-concept webcam recording with facial recognition
     - Locally hosted
-    - Utilizing docker
+    - ~~Utilizing docker~~
+        - Docker no longer needed since we won't be using extensive Python-based
+          environment _(see below)_
 1. Decide which webpage framework to use
-    - Likely will need to be [Django](https://www.djangoproject.com/) or
-      [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+    - ~~Likely will need to be [Django](https://www.djangoproject.com/) or
+      [Flask](https://flask.palletsprojects.com/en/1.1.x/)~~
+        - Python-based frameworks would require **web sockets**, which are **too
+          cumbersome** for leveraging in a cloud-based environment
+    - For now, use basic **JavaScript & HTML**, expanding to framework as
+      necessary
 1. Create basic webpage and test basic webcam capture
 1. Integrate webcam recording with pre-loaded faces
 1. Add feature for user to upload their own faces prior to facial recognition
    processing
+
 
