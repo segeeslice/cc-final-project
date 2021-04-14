@@ -10,7 +10,13 @@
 
         <title>Live Facial Recognition Tool</title>
 
-        <!-- Run the code from script.js once everything on this page is loaded -->
+        <!-- Import facial detection library -->
+        <script defer src="face-api.min.js"></script>
+
+        <!-- Import other homemade scripts -->
+        <script defer src="async-interval.js"></script>
+
+        <!-- Run the code from the main script.js once everything on this page is loaded -->
         <script defer src="script.js" type="module"></script>
 
         <style>
@@ -22,6 +28,10 @@
              display: flex;
              justify-content: center;
              align-items: center;
+         }
+
+         canvas {
+             position: absolute;
          }
         </style>
     </head>

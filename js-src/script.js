@@ -1,4 +1,11 @@
+// == CONSTANTS ==
+
+// Retrieve the video element from the calling HTML file
 const video = document.getElementById('video')
+
+let faceInterval = null
+
+// == METHODS ==
 
 // Start the video from a user camera
 // Browsers should prompt for device independently
@@ -31,5 +38,50 @@ function stopVideo () {
     video.srcObject = null
 }
 
-// Start the video upon loading this file
-startVideo()
+// Clear a canvas UI element
+function clearCanvas (canvas) {
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+}
+
+// == MAIN CODE ==
+
+// Import facial recognition models and start the video once we're ready
+Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+    faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+]).then(startVideo)
+
+// Once the models are loaded and the video is playing, begin the additional
+// facial recognition
+video.addEventListener('play', () => {
+    // Create and add an HTML element to the page for displaying the facial
+    // recognition details
+    const canvas = faceapi.createCanvasFromMedia(video)
+    document.body.append(canvas)
+
+    const displaySize = { width: video.width, height: video.height }
+    faceapi.matchDimensions(canvas, displaySize)
+
+    // Set the global facial detection interval
+    // Can later be cancelled via clearAsyncInterval
+    faceInterval = setAsyncInterval(async () => {
+        // Detect via a smaller, faster (less accurate) model
+        const detector = new faceapi.TinyFaceDetectorOptions()
+
+        // Get all faces in the frame with any additional settings
+        const detections = await faceapi.detectAllFaces(video, detector)
+                                        .withFaceLandmarks()
+                                        .withFaceExpressions()
+
+        // Clear the canvas on each iteration
+        clearCanvas(canvas)
+
+        // Resize the facial detections to fit the current display
+        const resizedDetections = faceapi.resizeResults(detections, displaySize)
+
+        // Finally, draw the resultant detections
+        faceapi.draw.drawDetections(canvas, resizedDetections)
+    }, 50)
+})
