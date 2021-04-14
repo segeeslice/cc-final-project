@@ -44,7 +44,8 @@ function loadFaceApiModels () {
         faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
         faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
         faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+        // faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+        faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
     ])
 }
 
@@ -62,26 +63,45 @@ function getOverlappingCanvas(videoEl) {
 }
 
 // Start facial detection on a video element with the given overlapping canvas
-function startFacialDetection(videoEl) {
+async function startFacialDetection(videoEl) {
     const displaySize = { width: videoEl.width, height: videoEl.height }
     const canvas = getOverlappingCanvas(videoEl)
+
+    console.log('Loading reference images...')
+    const labeledFaceDescriptors = await loadReferenceImages('./images')
+    console.log('Making face matcher system...')
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+    console.log('Complete. Launching live facial detection...')
 
     // Can later be cancelled via clearAsyncInterval
     let faceInterval = setAsyncInterval(async () => {
         // Detect via a smaller, faster (less accurate) model
         const detector = new faceapi.TinyFaceDetectorOptions()
 
-        // Get all faces in the frame with any additional settings
+        // Get all faces in the frame
+        // Descriptors are required for facial recognition, and
+        // landmarks are required for descriptors
         const detections = await faceapi.detectAllFaces(videoEl, detector)
-
-        // Clear the canvas on each iteration
-        clearCanvas(canvas)
+                                        .withFaceLandmarks()
+                                        .withFaceDescriptors()
 
         // Resize the facial detections to fit the current display
         const resizedDetections = faceapi.resizeResults(detections, displaySize)
 
-        // Finally, draw the resultant detections
-        faceapi.draw.drawDetections(canvas, resizedDetections)
+        // Do facial matching against given face matching system
+        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+
+        // Draw each found face with our guess as to who it is
+        clearCanvas(canvas)
+        results.forEach((result, i) => {
+            const box = resizedDetections[i].detection.box
+            const label = result.toString()
+            const drawBox = new faceapi.draw.DrawBox(box, { label })
+            drawBox.draw(canvas)
+        })
+
+        // // Finally, draw the resultant detections
+        // faceapi.draw.drawDetections(canvas, resizedDetections)
     }, 50)
 
     // Return details in an object for later clearing
@@ -92,6 +112,21 @@ function startFacialDetection(videoEl) {
 function stopFacialDetection ({ canvas, faceInterval}) {
     clearAsyncInterval(faceInterval)
     clearCanvas(canvas)
+}
+
+// Load all reference images for facial recognition
+// basepath argument should correlate to a directory containing all labeled
+// images
+// Label for each image are simply taken from image name
+// NOTE: this is a WIP! Proof-of-concept at the moment
+async function loadReferenceImages (basepath) {
+    const img = await faceapi.fetchImage('./images/Seg.png')
+    const detections = await faceapi.detectSingleFace(img)
+                                    .withFaceLandmarks()
+                                    .withFaceDescriptor()
+    const descriptions = []
+    descriptions.push(detections.descriptor)
+    return new faceapi.LabeledFaceDescriptors('Dustin', descriptions)
 }
 
 // == MAIN CODE ==
@@ -106,8 +141,9 @@ loadFaceApiModels()
         // To stop:
         // stopVideo(videoEl)
 
-        video.addEventListener('play', () => {
-            let detectObj = startFacialDetection(videoEl)
+        video.addEventListener('play', async () => {
+            let detectObj = await startFacialDetection(videoEl)
+
             // To stop:
             // stopFacialDetection(detectObj)
         })
