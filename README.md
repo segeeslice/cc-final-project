@@ -67,10 +67,22 @@ To launch a **dev server** at `localhost:8080`:
 npm run serve
 ```
 
+### Deployment
+
+Azure instance owner (Dustin) must deploy, but it is generally done as specified
+in [this quicstart
+guide](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?pivots=platform-linux)
+by interfacing via Visual Studio Code.
+
 ## Sources
 
 - Facial recognition logic retrieved from [this
   repository](https://github.com/justadudewhohacks/face-api.js/)
+- Azure deployment and NodeJS environment quick-started via [this
+  guide](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?pivots=platform-linux)
+- Pieces of the initial NodeJS scripts for server integrations with Azure (e.g.
+  `/bin/www`) initially imported from output of [this generation
+  utility](https://expressjs.com/en/starter/generator.html)
 
 ---
 
