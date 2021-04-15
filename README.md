@@ -53,7 +53,11 @@ see the [separate documentation](docs/).
 
 ``` sh
 git clone https://github.com/segeeslice/cc-final-project
-cd cc-final-project
+
+cd cc-final-project/server
+npm install
+
+cd ../react-app
 npm install
 ```
 
@@ -62,8 +66,8 @@ npm install
 To launch a **dev server** at `localhost:3002`:
 
 ``` sh
-cd js-src/react-app
-npm run serve
+cd react-app
+npm start
 ```
 
 ### Builds
@@ -71,14 +75,14 @@ npm run serve
 To build:
 
 ``` sh
-cd js-src/react-app
+cd react-app
 npm run build
 ```
 
 To test the build at `localhost:3000`:
 
 ``` sh
-cd js-src
+cd server
 npm start
 ```
 
