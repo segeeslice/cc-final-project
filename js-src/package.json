@@ -2,10 +2,10 @@
   "name": "cc-final-project",
   "version": "0.0.0",
   "description": "Facial recognition program for our Cloud Computing project Spring 2021",
-  "main": "index.html",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "http-server"
+    "start": "node ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,12 @@
     "url": "https://github.com/segeeslice/cc-final-project/issues"
   },
   "homepage": "https://github.com/segeeslice/cc-final-project#readme",
-  "devDependencies": {
-    "http-server": "^0.12.3"
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.6",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1"
   }
 }

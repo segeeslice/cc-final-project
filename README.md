@@ -67,10 +67,31 @@ To launch a **dev server** at `localhost:8080`:
 npm run serve
 ```
 
+### Deployment
+
+Azure instance owner (Dustin) must deploy, but it is generally done as specified
+in [this quickstart
+guide](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?pivots=platform-linux)
+by interfacing via Visual Studio Code.
+
+#### Azure Compability Notes
+
+- `npm start` must correlate to running the app
+    - Configured in `package.json` under `scripts`
+    - Azure configured to run this command when running the server
+- Invalid server hits must still reply (e.g. send `404` messages)
+    - Used by Azure to make sure the server is running
+    - i.e. without this, web app never properly deploys!!
+
 ## Sources
 
 - Facial recognition logic retrieved from [this
   repository](https://github.com/justadudewhohacks/face-api.js/)
+- Azure deployment and NodeJS environment quick-started via [this
+  guide](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?pivots=platform-linux)
+- Pieces of the initial NodeJS scripts for server integrations with Azure (e.g.
+  `/bin/www`) initially imported from output of [this generation
+  utility](https://expressjs.com/en/starter/generator.html)
 
 ---
 
