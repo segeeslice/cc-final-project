@@ -47,6 +47,48 @@ see the [separate documentation](docs/).
 
 ### Prerequisites
 
+- [NodeJS](https://nodejs.org/en/)
+
+### Installation
+
+``` sh
+git clone https://github.com/segeeslice/cc-final-project
+cd cc-final-project
+npm install
+```
+
+### Usage
+
+First, ensure that the current working directory is `js-src`
+
+To launch a **dev server** at `localhost:8080`:
+
+``` sh
+npm run serve
+```
+
+## Sources
+
+- Facial recognition logic retrieved from [this
+  repository](https://github.com/justadudewhohacks/face-api.js/)
+
+---
+
+# Old Info
+
+This part of the document contains our original implementation details,
+utilizing a Python-based server instead within a Docker image. We were able to
+get this working, but hosting it on the cloud with webcam access proved to be
+difficult in different contexts, so we opted instead for HTML/JS which is hosted
+locally.
+
+As such, the remaining part of this README is deprecated, but left here for
+posterity and historical purposes.
+
+## Dev Usage
+
+### Prerequisites
+
 - `git`
 - `python3`
 - `docker`
