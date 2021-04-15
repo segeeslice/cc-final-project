@@ -1,3 +1,6 @@
 # Ignore npm-installed programs
 # User must instead install locally
 node_modules
+
+# Ignore temporary Visual Studio Code files
+.vscode
