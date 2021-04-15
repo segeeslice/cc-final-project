@@ -59,12 +59,27 @@ npm install
 
 ### Usage
 
-First, ensure that the current working directory is `js-src`
-
-To launch a **dev server** at `localhost:8080`:
+To launch a **dev server** at `localhost:3002`:
 
 ``` sh
+cd js-src/react-app
 npm run serve
+```
+
+### Builds
+
+To build:
+
+``` sh
+cd js-src/react-app
+npm run build
+```
+
+To test the build at `localhost:3000`:
+
+``` sh
+cd js-src
+npm start
 ```
 
 ### Deployment
@@ -76,8 +91,8 @@ by interfacing via Visual Studio Code.
 
 #### Azure Compability Notes
 
-- `npm start` must correlate to running the app
-    - Configured in `package.json` under `scripts`
+- `npm start` in `js-src` must correlate to running the app
+    - Configured in `package.json` under the `scripts` key
     - Azure configured to run this command when running the server
 - Invalid server hits must still reply (e.g. send `404` messages)
     - Used by Azure to make sure the server is running
