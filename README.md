@@ -70,9 +70,18 @@ npm run serve
 ### Deployment
 
 Azure instance owner (Dustin) must deploy, but it is generally done as specified
-in [this quicstart
+in [this quickstart
 guide](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs?pivots=platform-linux)
 by interfacing via Visual Studio Code.
+
+#### Azure Compability Notes
+
+- `npm start` must correlate to running the app
+    - Configured in `package.json` under `scripts`
+    - Azure configured to run this command when running the server
+- Invalid server hits must still reply (e.g. send `404` messages)
+    - Used by Azure to make sure the server is running
+    - i.e. without this, web app never properly deploys!!
 
 ## Sources
 
