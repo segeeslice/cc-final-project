@@ -25,21 +25,31 @@ function App() {
     alignContent: 'flex-start',
   }
 
-  const onStartClick = () => {
+  const centeredRowStyle = {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+
+  const onStartVideoClick = () => {
+    setVideoPlaying(true)
+  }
+  const onStopVideoClick = () => {
+    setVideoPlaying(false)
+    setRecPlaying(false)
+  }
+
+  const onStartRecClick = () => {
     setRecPlaying(true)
   }
-  const onStopClick = () => {
+  const onStopRecClick = () => {
     setRecPlaying(false)
   }
 
   return (<>
     <div style={bodyStyle}>
-      <div style={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems:' center',
-      }}>
+      <div style={centeredRowStyle}>
         <FaceRecVideo
           referenceImagePaths={referenceImagePaths}
           height="560px"
@@ -48,11 +58,25 @@ function App() {
           recPlaying={recPlaying}
         />
       </div>
-      <div>
-        <button onClick={onStartClick}>
+      <div style={centeredRowStyle}>
+        <span style={{padding: '0px 12px'}}>
+          Video Stream:
+        </span>
+        <button onClick={onStartVideoClick}>
           Start
         </button>
-        <button onClick={onStopClick}>
+        <button onClick={onStopVideoClick}>
+          Stop
+        </button>
+      </div>
+      <div style={centeredRowStyle}>
+        <span style={{padding: '0px 12px'}}>
+          Facial Recognition:
+        </span>
+        <button onClick={onStartRecClick}>
+          Start
+        </button>
+        <button onClick={onStopRecClick}>
           Stop
         </button>
       </div>
