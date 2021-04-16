@@ -53,18 +53,37 @@ see the [separate documentation](docs/).
 
 ``` sh
 git clone https://github.com/segeeslice/cc-final-project
-cd cc-final-project
+
+cd cc-final-project/server
+npm install
+
+cd ../react-app
 npm install
 ```
 
 ### Usage
 
-First, ensure that the current working directory is `js-src`
-
-To launch a **dev server** at `localhost:8080`:
+To launch a **dev server** at `localhost:3002`:
 
 ``` sh
-npm run serve
+cd react-app
+npm start
+```
+
+### Builds
+
+To build:
+
+``` sh
+cd react-app
+npm run build
+```
+
+To test the build at `localhost:3000`:
+
+``` sh
+cd server
+npm start
 ```
 
 ### Deployment
@@ -76,8 +95,8 @@ by interfacing via Visual Studio Code.
 
 #### Azure Compability Notes
 
-- `npm start` must correlate to running the app
-    - Configured in `package.json` under `scripts`
+- `npm start` in `js-src` must correlate to running the app
+    - Configured in `package.json` under the `scripts` key
     - Azure configured to run this command when running the server
 - Invalid server hits must still reply (e.g. send `404` messages)
     - Used by Azure to make sure the server is running

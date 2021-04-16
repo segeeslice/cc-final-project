@@ -4,3 +4,6 @@ node_modules
 
 # Ignore temporary Visual Studio Code files
 .vscode
+
+# Ignore built files
+build

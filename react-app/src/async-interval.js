@@ -8,7 +8,7 @@
  *   clearAsyncInterval(interval)
  */
 
-const setAsyncInterval = (func, ms) => {
+export const setAsyncInterval = (func, ms) => {
   const intervalObj = {
     run: true,
     ref: null,
@@ -32,10 +32,10 @@ const setAsyncInterval = (func, ms) => {
   return intervalObj
 }
 
-const clearAsyncInterval = (intervalObj) => {
+export const clearAsyncInterval = (intervalObj) => {
   intervalObj.run = false
   clearTimeout(intervalObj.ref)
 }
 
-// const defaultExport = { setAsyncInterval, clearAsyncInterval }
-// export default defaultExport
+const defaultExport = { setAsyncInterval, clearAsyncInterval }
+export default defaultExport

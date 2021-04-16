@@ -1,8 +1,16 @@
 // == METHODS ==
 
+// import * as canvas from 'canvas';
+import * as faceapi from 'face-api.js'
+
+import { setAsyncInterval, clearAsyncInterval } from './async-interval.js'
+
+// const { Canvas, Image, ImageData } = canvas
+// faceapi.env.monkeyPatch({ Canvas, Image, ImageData })
+
 // Start the video from a user camera
 // Browsers should prompt for device independently
-async function startVideo(videoEl) {
+export async function startVideo(videoEl) {
     let stream = null;
 
     try {
@@ -18,9 +26,9 @@ async function startVideo(videoEl) {
 }
 
 // Stop the user camera video
-function stopVideo (videoEl) {
+export function stopVideo (videoEl) {
     let stream = videoEl.srcObject
-    if (stream === null) return
+    if (stream == null) return
 
     let tracks = stream.getTracks()
     for (var i = 0; i < tracks.length; i++) {
@@ -32,20 +40,20 @@ function stopVideo (videoEl) {
 }
 
 // Clear a canvas UI element
-function clearCanvas (canvas) {
+export function clearCanvas (canvas) {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
 }
 
 // Load all the necessary models for faceapi
 // Each should correspond to a file under models/
 // Returns a promise
-function loadFaceApiModels () {
+export function loadFaceApiModels () {
     return Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
         // faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-        faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+        faceapi.nets.ssdMobilenetv1.loadFromUri('./models'),
     ])
 }
 
@@ -63,9 +71,14 @@ function getOverlappingCanvas(videoEl) {
 }
 
 // Start facial detection on a video element with the given overlapping canvas
-async function startFacialDetection(videoEl, referenceImagePaths) {
+export async function startFacialDetection(videoEl, opts) {
     const displaySize = { width: videoEl.width, height: videoEl.height }
-    const canvas = getOverlappingCanvas(videoEl)
+    let { referenceImagePaths, canvas } = opts
+
+    if (canvas == null) {
+        canvas = getOverlappingCanvas(videoEl)
+        canvas.style["position"] = "absolute"
+    }
 
     console.log('Loading reference images...')
     const labeledFaceDescriptors = await loadReferenceImages(referenceImagePaths)
@@ -112,13 +125,13 @@ async function startFacialDetection(videoEl, referenceImagePaths) {
 }
 
 // Stop facial detection and clear canvas
-function stopFacialDetection ({ canvas, faceInterval}) {
+export function stopFacialDetection ({ canvas, faceInterval}) {
     clearAsyncInterval(faceInterval)
     clearCanvas(canvas)
 }
 
 function getFileName (fullPath) {
-    return fullPath.match(/[^\/]*$/)[0]
+    return fullPath.match(/[^/]*$/)[0]
 }
 
 function getFileExt (fileName) {
@@ -162,27 +175,27 @@ async function loadReferenceImages (paths) {
 
 // == MAIN CODE ==
 
-// Retrieve the video element from the calling HTML file
-const videoEl = document.getElementById('video')
+// // Retrieve the video element from the calling HTML file
+// const videoEl = document.getElementById('video')
 
-// Temporarily utilize hard-coded test images
-const referenceImagePaths = [
-    './images/Seg.png',
-    './images/Dustin.jpg',
-    './images/Mo.png'
-]
+// // Temporarily utilize hard-coded test images
+// const referenceImagePaths = [
+//     './images/Seg.png',
+//     './images/Dustin.jpg',
+//     './images/Mo.png'
+// ]
 
-// Load models and start facial detection
-loadFaceApiModels()
-    .then(() => {
-        startVideo(videoEl)
-        // To stop:
-        // stopVideo(videoEl)
+// // Load models and start facial detection
+// loadFaceApiModels()
+//     .then(() => {
+//         startVideo(videoEl)
+//         // To stop:
+//         // stopVideo(videoEl)
 
-        video.addEventListener('play', async () => {
-            let detectObj = await startFacialDetection(videoEl, referenceImagePaths)
+//         video.addEventListener('play', async () => {
+//             let detectObj = await startFacialDetection(videoEl, referenceImagePaths)
 
-            // To stop:
-            // stopFacialDetection(detectObj)
-        })
-    })
+//             // To stop:
+//             // stopFacialDetection(detectObj)
+//         })
+//     })
