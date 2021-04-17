@@ -1,3 +1,10 @@
+/*
+ * Component that wraps FaceRecVideo to enhance it's functionality
+ *
+ * Adds control over playback as well as various QoL features, such as loading
+ * indicators
+ */
+
 import React from 'react'
 import FaceRecVideo from './FaceRecVideo'
 import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
@@ -14,6 +21,8 @@ function FaceRecVideoPlayer(props) {
   const [videoHeight, ] = React.useState('560px')
   const [videoPlaying, setVideoPlaying] = React.useState(true)
   const [recPlaying, setRecPlaying] = React.useState(false)
+
+  const [loading, setLoading] = React.useState(false)
 
   const rootStyle = {
     margin: 0,
@@ -50,6 +59,10 @@ function FaceRecVideoPlayer(props) {
     setRecPlaying(false)
   }
 
+  const onLoadingChange = React.useCallback((val) => {
+    setLoading(val)
+  }, [setLoading])
+
   return (<>
     <div style={rootStyle}>
       {/* Video playback */}
@@ -63,6 +76,7 @@ function FaceRecVideoPlayer(props) {
                 width={videoWidth}
                 videoPlaying={videoPlaying}
                 recPlaying={recPlaying}
+                onLoadingChange={onLoadingChange}
               />
             :
               <div
@@ -82,7 +96,6 @@ function FaceRecVideoPlayer(props) {
         }
       </div>
 
-      {/* TODO: Maybe move within FaceRecVideo directly */}
       <div
         style={{
           zIndex: 1000,
@@ -92,6 +105,7 @@ function FaceRecVideoPlayer(props) {
         }}
       >
         <FaceRecLoadingOverlay
+          hide={!loading}
         />
       </div>
 
