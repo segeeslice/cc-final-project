@@ -114,21 +114,34 @@ function FaceRecVideoPlayer(props) {
         <span style={{padding: '0px 12px'}}>
           Video Stream:
         </span>
-        <button onClick={onStartVideoClick}>
+        <button
+          onClick={onStartVideoClick}
+          disabled={loading}
+        >
           Start
         </button>
-        <button onClick={onStopVideoClick}>
+        <button
+          onClick={onStopVideoClick}
+          disabled={loading}
+        >
           Stop
         </button>
       </div>
+
       <div style={centeredRowStyle}>
         <span style={{padding: '0px 12px'}}>
           Facial Recognition:
         </span>
-        <button onClick={onStartRecClick}>
+        <button
+          onClick={onStartRecClick}
+          disabled={loading}
+        >
           Start
         </button>
-        <button onClick={onStopRecClick}>
+        <button
+          onClick={onStopRecClick}
+          disabled={loading}
+        >
           Stop
         </button>
       </div>
