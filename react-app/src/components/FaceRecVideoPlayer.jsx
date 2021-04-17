@@ -68,6 +68,10 @@ function FaceRecVideoPlayer(props) {
     setRecPlaying(false)
   }
 
+  const onScreenCapClick = () => {
+    
+  }
+
   const onLoadingChange = React.useCallback((val) => {
     setLoading(val)
   }, [setLoading])
@@ -186,6 +190,17 @@ function FaceRecVideoPlayer(props) {
             <StopIcon/>
           </IconButton>
         </Card>
+      </div>
+      <div style={centeredRowStyle}>
+        <span style={{padding: '0px 12px'}}>
+          Capture Face:
+        </span>
+        <button 
+          onClick={onScreenCapClick}
+          disabled={loading}
+        >
+          Take Photo
+        </button>
       </div>
     </div>
   </>);
