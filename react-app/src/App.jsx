@@ -1,13 +1,6 @@
 import React from 'react'
 import './App.css';
-import FaceRecVideo from './components/FaceRecVideo'
-
-//  Temporarily utilize hard-coded test images
-const referenceImagePaths = [
-  './images/Seg.png',
-  './images/Dustin.jpg',
-  './images/Mo.png'
-]
+import FaceRecVideoPlayer from './components/FaceRecVideoPlayer'
 
 function App() {
   const bodyStyle = {
@@ -18,15 +11,13 @@ function App() {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start',
   }
 
   return (<>
     <div style={bodyStyle}>
-      <FaceRecVideo
-        referenceImagePaths={referenceImagePaths}
-        height="560px"
-        width="720px"
-      />
+      <FaceRecVideoPlayer/>
     </div>
   </>);
 }

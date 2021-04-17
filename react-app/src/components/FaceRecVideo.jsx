@@ -18,16 +18,23 @@ import {
   stopFacialDetection,
 } from '../face-rec.js'
 
+// Global "detect object", which is returned from startFacialRecognition
+// Allows for easy use of stopFacialRecognition between renders
+let detectObj = null
+
 function FaceRecVideo(props) {
   const {
     referenceImagePaths,
     width,
     height,
+    videoPlaying,
+    recPlaying,
   } = props
 
   const videoRef = React.createRef(null)
   const canvasRef = React.createRef(null)
 
+  // const videoEl = <VideoElMemo videoRef={videoRef} height={height} width={width}/>
   const videoEl = (
     <video
       ref={videoRef}
@@ -38,6 +45,9 @@ function FaceRecVideo(props) {
       height={height}
       style={{
         position: 'absolute',
+        // Canvas clearing can hit timing issue with the interval, leaving a lingering box
+        // Just in case canvas doesn't stop in time, put the video in front of it to hide it
+        zIndex: recPlaying ? -1 : 1,
       }}
     ></video>
   )
@@ -53,42 +63,55 @@ function FaceRecVideo(props) {
     ></canvas>
   )
 
-  // Upon rendering the page...
+  // Event handling for recPlaying
   React.useEffect(() => {
-    let detectObj = null
     const currVideoRef = videoRef.current
     const currCanvasRef = canvasRef.current
 
-    // Load AI models
-    loadFaceApiModels()
-      .then(() => {
-        // Start the video playback
-        startVideo(currVideoRef)
-
-        // Once we're sure the video element is ready and playing,
-        // launch facial detection
-        // NOTE: This line can add multiple event listeners in development,
-        //       which may be fixable by removing event listeners first
-        videoRef.current.addEventListener('play', async () => {
+    if (videoPlaying && recPlaying) {
+      // Load AI models
+      loadFaceApiModels()
+        .then(async() => {
+          // NOTE: This line can add multiple event listeners in development,
+          //       which may be fixable by removing event listeners first
           detectObj = await startFacialDetection(currVideoRef, {
             referenceImagePaths,
             canvas: currCanvasRef,
           })
         })
-      })
-      .catch((e) => {
-        console.log("Could not load face-api models")
-        console.error(e)
-      })
+        .catch((e) => {
+          console.log("Could not load face-api models")
+          console.error(e)
+        })
+    } else if (detectObj) {
+      stopFacialDetection(detectObj)
+      detectObj = null
+    }
 
-    // Upon destroying the page, stop current streams and intervals
-    // Note that this still doesn't particularly like multiple dev reloads but
-    // oh well
+    // Upon destroying the page, stop facial detection interval
+    return () => {
+      if (detectObj) {
+        stopFacialDetection(detectObj)
+        detectObj = null
+      }
+    }
+  }, [videoPlaying, recPlaying, videoRef, canvasRef, referenceImagePaths])
+
+  // Event handling for videoPlaying
+  React.useEffect(() => {
+    const currVideoRef = videoRef.current
+
+    if (videoPlaying) {
+      startVideo(videoRef.current)
+    } else {
+      stopVideo(videoRef.current)
+    }
+
+    // Upon destroying the page, stop the video streaming
     return () => {
       if (currVideoRef) stopVideo(currVideoRef)
-      if (detectObj) stopFacialDetection(detectObj)
     }
-  })
+  }, [videoPlaying, videoRef])
 
   // Return resulting video overlayed by canvas
   // Wrapped in relative element so we can treat it as relative
