@@ -1,5 +1,6 @@
 import React from 'react'
 import FaceRecVideo from './FaceRecVideo'
+import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
 
 //  Temporarily utilize hard-coded test images
 const referenceImagePaths = [
@@ -51,6 +52,7 @@ function FaceRecVideoPlayer(props) {
 
   return (<>
     <div style={rootStyle}>
+      {/* Video playback */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         {
           videoPlaying
@@ -68,7 +70,7 @@ function FaceRecVideoPlayer(props) {
                   height: videoHeight,
                   width: videoWidth,
                   backgroundColor: 'gray',
-                    display: 'flex',
+                  display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
@@ -79,6 +81,21 @@ function FaceRecVideoPlayer(props) {
               </div>
         }
       </div>
+
+      {/* TODO: Maybe move within FaceRecVideo directly */}
+      <div
+        style={{
+          zIndex: 1000,
+          position: 'absolute',
+          height: videoHeight,
+          width: videoWidth,
+        }}
+      >
+        <FaceRecLoadingOverlay
+        />
+      </div>
+
+      {/* Button panel action area */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         <span style={{padding: '0px 12px'}}>
           Video Stream:
