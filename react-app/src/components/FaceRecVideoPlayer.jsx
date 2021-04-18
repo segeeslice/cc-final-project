@@ -9,6 +9,14 @@ import React from 'react'
 import FaceRecVideo from './FaceRecVideo'
 import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
 
+import {
+  IconButton,
+  Card,
+  Typography,
+} from '@material-ui/core'
+import PlayIcon from '@material-ui/icons/PlayArrow'
+import StopIcon from '@material-ui/icons/Stop'
+
 //  Temporarily utilize hard-coded test images
 const referenceImagePaths = [
   './images/Seg.png',
@@ -29,11 +37,12 @@ function FaceRecVideoPlayer(props) {
     padding: 0,
     width: '100%',
     height: '100%',
-    display: 'flex',
+    display: 'inline-flex',
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'wrap',
-    alignContent: 'flex-start',
+    alignContent: 'center',
+    position: 'relative'
   }
 
   const centeredRowStyle = {
@@ -67,6 +76,7 @@ function FaceRecVideoPlayer(props) {
     <div style={rootStyle}>
       {/* Video playback */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
+        <Card style={{position: 'relative'}}>
         {
           videoPlaying
             ?
@@ -89,11 +99,18 @@ function FaceRecVideoPlayer(props) {
                   alignItems: 'center',
                 }}
               >
-                <h2>
-                  Video not playing!
-                </h2>
+                <Typography
+                  variant="h4"
+                  style={{
+                    textShadow: '0px 0px 8px #000000',
+                    color: 'white'
+                  }}
+                >
+                  [ Video stopped ]
+                </Typography>
               </div>
         }
+        </Card>
       </div>
 
       <div
@@ -112,39 +129,63 @@ function FaceRecVideoPlayer(props) {
 
       {/* Button panel action area */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
-        <span style={{padding: '0px 12px'}}>
-          Video Stream:
-        </span>
-        <button
-          onClick={onStartVideoClick}
-          disabled={loading}
-        >
-          Start
-        </button>
-        <button
-          onClick={onStopVideoClick}
-          disabled={loading}
-        >
-          Stop
-        </button>
+        <Card style={{display: 'flex', padding: '6px', alignItems: 'center'}}>
+          <Typography variant="h6" style={{padding: '0px 12px'}}>
+            Video Stream:
+          </Typography>
+          <IconButton
+            onClick={onStartVideoClick}
+            disabled={loading}
+            size="small"
+            aria-label="play video stream"
+            style={{
+              color: !loading && videoPlaying && "green"
+            }}
+          >
+            <PlayIcon/>
+          </IconButton>
+          <IconButton
+            onClick={onStopVideoClick}
+            disabled={loading}
+            size="small"
+            aria-label="stop video stream"
+            style={{
+              color: !loading && !videoPlaying && "red"
+            }}
+          >
+            <StopIcon/>
+          </IconButton>
+        </Card>
       </div>
 
       <div style={centeredRowStyle}>
-        <span style={{padding: '0px 12px'}}>
-          Facial Recognition:
-        </span>
-        <button
-          onClick={onStartRecClick}
-          disabled={loading}
-        >
-          Start
-        </button>
-        <button
-          onClick={onStopRecClick}
-          disabled={loading}
-        >
-          Stop
-        </button>
+        <Card style={{display: 'flex', padding: '6px'}}>
+          <Typography variant="h6" style={{padding: '0px 12px'}}>
+            Facial Recognition:
+          </Typography>
+          <IconButton
+            onClick={onStartRecClick}
+            disabled={loading}
+            size="small"
+            aria-label="play facial recognition box"
+            style={{
+              color: !loading && recPlaying && "green"
+            }}
+          >
+            <PlayIcon/>
+          </IconButton>
+          <IconButton
+            onClick={onStopRecClick}
+            disabled={loading}
+            size="small"
+            aria-label="stop facial recognition box"
+            style={{
+              color: !loading && !recPlaying && "red"
+            }}
+          >
+            <StopIcon/>
+          </IconButton>
+        </Card>
       </div>
     </div>
   </>);
