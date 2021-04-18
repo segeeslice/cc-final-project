@@ -102,6 +102,7 @@ function FaceRecVideoPlayer(props) {
           position: 'absolute',
           height: videoHeight,
           width: videoWidth,
+          top: 0,
         }}
       >
         <FaceRecLoadingOverlay
