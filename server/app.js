@@ -13,6 +13,12 @@ var logger = require('morgan');
 
 var app = express();
 
+// Authentication with ZeroSSL requires a file at this URL for verification
+const AUTH_URL = '.well-known/pki-validation'
+
+// Wer'e storing the actual ZeroSSL authentication file under the auth directory
+const AUTH_DIR = 'auth'
+
 // view engine setup
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile)
@@ -22,12 +28,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Expose built files to the server
+// Expose any necessary files to the server
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'auth')));
 
-// Send index.html at the main page
+// Send the built index.html at the main URL
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
+
+// Send any authentication files for ZeroSSL
+app.get(`/${AUTH_URL}/:fileName`, function (req, res) {
+  const fullPath = path.join(__dirname, AUTH_DIR, req.params.fileName)
+  return res.sendFile(fullPath)
 })
 
 // catch 404 and forward to error handler
