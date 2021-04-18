@@ -5,8 +5,6 @@
  * NOTE: width and height props are REQUIRED for this to function properly
  *       They have to be exact pixel values as well, unfortunately, i.e. not 100%, 50vh, etc.
  *       This is just a limitation of the face-rec.js, as it needs to know how to resize results
- *
- * TODO: Add mechanism to dynamically control when facial recognition starts
  */
 
 import React from 'react'
@@ -22,6 +20,15 @@ import {
 // Allows for easy use of stopFacialRecognition between renders
 let detectObj = null
 
+const defaultProps = {
+    referenceImagePaths: [],
+    width: '720px',
+    height: '560px',
+    videoPlaying: false,
+    recPlaying: false,
+    onLoadingChange: (loadingVal) => {},
+}
+
 function FaceRecVideo(props) {
   const {
     referenceImagePaths,
@@ -29,7 +36,8 @@ function FaceRecVideo(props) {
     height,
     videoPlaying,
     recPlaying,
-  } = props
+    onLoadingChange,
+  } = { ...defaultProps, ...props }
 
   const videoRef = React.createRef(null)
   const canvasRef = React.createRef(null)
@@ -69,15 +77,19 @@ function FaceRecVideo(props) {
     const currCanvasRef = canvasRef.current
 
     if (videoPlaying && recPlaying) {
+      // Notify parent we're loading
+      onLoadingChange(true)
+
       // Load AI models
       loadFaceApiModels()
         .then(async() => {
-          // NOTE: This line can add multiple event listeners in development,
-          //       which may be fixable by removing event listeners first
           detectObj = await startFacialDetection(currVideoRef, {
             referenceImagePaths,
             canvas: currCanvasRef,
           })
+
+          // Notify parent we're finished
+          onLoadingChange(false)
         })
         .catch((e) => {
           console.log("Could not load face-api models")
@@ -95,7 +107,7 @@ function FaceRecVideo(props) {
         detectObj = null
       }
     }
-  }, [videoPlaying, recPlaying, videoRef, canvasRef, referenceImagePaths])
+  }, [videoPlaying, recPlaying, videoRef, canvasRef, referenceImagePaths, onLoadingChange])
 
   // Event handling for videoPlaying
   React.useEffect(() => {
@@ -123,4 +135,13 @@ function FaceRecVideo(props) {
   );
 }
 
-export default FaceRecVideo;
+// Use a memoized version of FaceRecVideo to ensure to useless re-renders
+//
+// This is generally necessary because of this component's reliance on useEffect
+// renders, which can rapidly attempt starting facial recognition if we're not
+// careful
+//
+// As such, export this as the default as well
+const FaceRecVideoMemo = React.memo(FaceRecVideo)
+
+export default FaceRecVideoMemo;

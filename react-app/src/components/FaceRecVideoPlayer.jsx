@@ -1,5 +1,13 @@
+/*
+ * Component that wraps FaceRecVideo to enhance it's functionality
+ *
+ * Adds control over playback as well as various QoL features, such as loading
+ * indicators
+ */
+
 import React from 'react'
 import FaceRecVideo from './FaceRecVideo'
+import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
 
 //  Temporarily utilize hard-coded test images
 const referenceImagePaths = [
@@ -13,6 +21,8 @@ function FaceRecVideoPlayer(props) {
   const [videoHeight, ] = React.useState('560px')
   const [videoPlaying, setVideoPlaying] = React.useState(true)
   const [recPlaying, setRecPlaying] = React.useState(false)
+
+  const [loading, setLoading] = React.useState(false)
 
   const rootStyle = {
     margin: 0,
@@ -49,8 +59,13 @@ function FaceRecVideoPlayer(props) {
     setRecPlaying(false)
   }
 
+  const onLoadingChange = React.useCallback((val) => {
+    setLoading(val)
+  }, [setLoading])
+
   return (<>
     <div style={rootStyle}>
+      {/* Video playback */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         {
           videoPlaying
@@ -61,6 +76,7 @@ function FaceRecVideoPlayer(props) {
                 width={videoWidth}
                 videoPlaying={videoPlaying}
                 recPlaying={recPlaying}
+                onLoadingChange={onLoadingChange}
               />
             :
               <div
@@ -68,7 +84,7 @@ function FaceRecVideoPlayer(props) {
                   height: videoHeight,
                   width: videoWidth,
                   backgroundColor: 'gray',
-                    display: 'flex',
+                  display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
@@ -79,25 +95,53 @@ function FaceRecVideoPlayer(props) {
               </div>
         }
       </div>
+
+      <div
+        style={{
+          zIndex: 1000,
+          position: 'absolute',
+          height: videoHeight,
+          width: videoWidth,
+        }}
+      >
+        <FaceRecLoadingOverlay
+          hide={!loading}
+        />
+      </div>
+
+      {/* Button panel action area */}
       <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         <span style={{padding: '0px 12px'}}>
           Video Stream:
         </span>
-        <button onClick={onStartVideoClick}>
+        <button
+          onClick={onStartVideoClick}
+          disabled={loading}
+        >
           Start
         </button>
-        <button onClick={onStopVideoClick}>
+        <button
+          onClick={onStopVideoClick}
+          disabled={loading}
+        >
           Stop
         </button>
       </div>
+
       <div style={centeredRowStyle}>
         <span style={{padding: '0px 12px'}}>
           Facial Recognition:
         </span>
-        <button onClick={onStartRecClick}>
+        <button
+          onClick={onStartRecClick}
+          disabled={loading}
+        >
           Start
         </button>
-        <button onClick={onStopRecClick}>
+        <button
+          onClick={onStopRecClick}
+          disabled={loading}
+        >
           Stop
         </button>
       </div>
