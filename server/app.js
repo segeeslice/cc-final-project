@@ -10,6 +10,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var multer = require('multer')
 
 var app = express();
 
@@ -24,11 +25,39 @@ app.use(cookieParser());
 
 // Expose built files to the server
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(__dirname + 'public'));
 
 // Send index.html at the main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
+
+// TODO - Fix upload endpoint below
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/')
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + path.extname(file.originalname))
+//   }
+// })
+
+// const upload = multer({ storage: storage }).single('file')
+
+// app.post('/upload', (req, res) => {
+//   upload(req, res, (err) => {
+//     if (err) {
+//       res.sendStatus(500)
+//     }
+//     res.send(req.file)
+//   })
+// })
+
+// app.get('/test', (req, res) => {
+//   res.send('test good')
+// })
+
+// app.use(express.static(__dirname + '/public'))
 
 // catch 404 and forward to error handler
 // This is **REQUIRED** for azure handling!

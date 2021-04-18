@@ -6,9 +6,9 @@
  */
 
 import React from 'react'
-import captureVideoFrame from 'capture-video-frame'
 import FaceRecVideo from './FaceRecVideo'
 import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
+import PhotoManager from './PhotoManager'
 
 import {
   IconButton,
@@ -30,8 +30,6 @@ function FaceRecVideoPlayer(props) {
   const [videoHeight, ] = React.useState('560px')
   const [videoPlaying, setVideoPlaying] = React.useState(true)
   const [recPlaying, setRecPlaying] = React.useState(false)
-
-  const [photo, setPhoto] = React.useState([])
 
   const [loading, setLoading] = React.useState(false)
 
@@ -69,10 +67,6 @@ function FaceRecVideoPlayer(props) {
   }
   const onStopRecClick = () => {
     setRecPlaying(false)
-  }
-
-  const onTakePhotoClick = () => {
-    setPhoto(captureVideoFrame('video', 'png').dataUri)
   }
 
   const onLoadingChange = React.useCallback((val) => {
@@ -194,27 +188,10 @@ function FaceRecVideoPlayer(props) {
           </IconButton>
         </Card>
       </div>
-      <div style={centeredRowStyle}>
-        <span style={{padding: '0px 12px'}}>
-          Capture Face:
-        </span>
-        <button 
-          onClick={onTakePhotoClick}
-          disabled={loading}
-        >
-          Take Photo
-        </button>
-      </div>
       <div>
-        {
-          photo
-            ?
-              // The capture worked, so display the photo
-              <img id='photo' src={photo} />
-            :
-              // Capture did not work, so display this message to the user
-              <h4>Photo not captured properly. Please try again.</h4>
-        }
+        <PhotoManager
+          hide={!loading}
+        />
       </div>
     </div>
   </>);
