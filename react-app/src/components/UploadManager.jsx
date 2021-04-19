@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
+import axios from 'axios'
 
 class UploadManager extends React.Component {
   constructor() {
@@ -18,17 +18,17 @@ class UploadManager extends React.Component {
   }
 
   onUploadClick = () => {
-    // const data = new FormData()
-    // data.append(this.state.name, this.props.photo.blob, this.state.name + '.png')
-    // axios.post('/upload', data).then((res) => {
-    //   console.log(res)
-    // });
-  };
+    const data = new FormData()
+    data.append('image', this.props.photo.blob, this.state.name + '.png')
+    axios.post('http://localhost:3000/upload', data).then((res) => { //This URL should be changed to the actual server URL when deployed
+      console.log(res)
+    }).catch(error => console.log(error))
+  }
 
   render() {
     return (
       <div>
-        <label for='name'>
+        <label htmlFor='name'>
           Name of person in photo:
         </label>
         <input

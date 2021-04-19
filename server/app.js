@@ -11,6 +11,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var multer = require('multer')
+var cors = require('cors')
 
 var app = express();
 
@@ -22,6 +23,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors({ origin: true }))
 
 // Expose built files to the server
 app.use(express.static(path.join(__dirname, 'build')));
@@ -32,32 +34,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
-// TODO - Fix upload endpoint below
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'uploads/')
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, Date.now() + '-' + path.extname(file.originalname))
-//   }
-// })
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
 
-// const upload = multer({ storage: storage }).single('file')
+var upload = multer({ storage: storage })
 
-// app.post('/upload', (req, res) => {
-//   upload(req, res, (err) => {
-//     if (err) {
-//       res.sendStatus(500)
-//     }
-//     res.send(req.file)
-//   })
-// })
-
-// app.get('/test', (req, res) => {
-//   res.send('test good')
-// })
-
-// app.use(express.static(__dirname + '/public'))
+app.post('/upload', upload.single('image'), (req, res, next) => {
+  const file = req.file
+  if (!file) {
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+    res.sendStatus(200)
+  
+})
 
 // catch 404 and forward to error handler
 // This is **REQUIRED** for azure handling!
