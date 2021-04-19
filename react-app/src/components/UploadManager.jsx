@@ -17,12 +17,16 @@ class UploadManager extends React.Component {
     })
   }
 
+  // onUploadClick = () => {
+  //   const data = new FormData()
+  //   data.append('image', this.props.photo.blob, this.state.name + '.png')
+  //   axios.post('http://localhost:3000/upload', data).then((res) => { //This URL should be changed to the actual server URL when deployed
+  //     console.log(res)
+  //   }).catch(error => console.log(error))
+  // }
+
   onUploadClick = () => {
-    const data = new FormData()
-    data.append('image', this.props.photo.blob, this.state.name + '.png')
-    axios.post('http://localhost:3000/upload', data).then((res) => { //This URL should be changed to the actual server URL when deployed
-      console.log(res)
-    }).catch(error => console.log(error))
+    localStorage[this.state.name] = this.props.photo.dataUri
   }
 
   render() {

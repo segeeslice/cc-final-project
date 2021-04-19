@@ -151,6 +151,7 @@ function removeFileExt (fileName) {
 async function loadReferenceImages (paths) {
     const descriptors = []
 
+    // For reference images already in public folder
     for (const i in paths) {
         const path = paths[i]
         try {
@@ -167,6 +168,25 @@ async function loadReferenceImages (paths) {
 
         } catch (e) {
             console.log(`Could not load image at ${path}: ${e}`)
+        }
+    }
+
+    // For images uploaded to localStorage
+
+    for (var k = 0; k < localStorage.length; k++) {
+        const label = localStorage.key(k)
+        
+        try {
+            const img = await faceapi.fetchImage(localStorage[label])
+            const detections = await faceapi.detectSingleFace(img)
+                                            .withFaceLandmarks()
+                                            .withFaceDescriptor()
+        
+            const labeledDescriptor = new faceapi.LabeledFaceDescriptors(label, [detections.descriptor])
+            descriptors.push(labeledDescriptor)
+
+        } catch (e) {
+            console.log(`Could not load image for ${label}: ${e}`)
         }
     }
 
