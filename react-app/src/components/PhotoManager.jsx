@@ -29,13 +29,16 @@ function PhotoManager(props) {
             ?
               // The capture worked, so display the photo
               <div>
-                <img id='photo' src={photo.dataUri} />
                 {
                   photoTaken
                     ?
-                      <UploadManager
-                        photo={photo}
-                      />
+                      <div>
+                        <img id='photo' src={photo.dataUri} />
+                        <UploadManager
+                          setPhotoTaken={setPhotoTaken}
+                          photo={photo}
+                        />
+                      </div>
                     :
                       null
                 }

@@ -18,6 +18,7 @@ class UploadManager extends React.Component {
 
   onUploadClick = () => {
     localStorage[this.state.name] = this.props.photo.dataUri
+    this.props.setPhotoTaken(false)
   }
 
   render() {
