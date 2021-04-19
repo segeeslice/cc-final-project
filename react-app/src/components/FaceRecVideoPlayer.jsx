@@ -159,7 +159,7 @@ function FaceRecVideoPlayer(props) {
         </Card>
       </div>
 
-      <div style={centeredRowStyle}>
+      <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         <Card style={{display: 'flex', padding: '6px'}}>
           <Typography variant="h6" style={{padding: '0px 12px'}}>
             Facial Recognition:
@@ -188,9 +188,9 @@ function FaceRecVideoPlayer(props) {
           </IconButton>
         </Card>
       </div>
-      <div>
+      <div style={centeredRowStyle}>
         <PhotoManager
-          hide={!loading}
+          hide={loading}
         />
       </div>
     </div>

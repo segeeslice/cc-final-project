@@ -2,6 +2,13 @@ import React from 'react'
 import captureVideoFrame from 'capture-video-frame'
 import UploadManager from './UploadManager'
 
+import {
+  IconButton,
+  Card,
+  Typography,
+} from '@material-ui/core'
+import CameraAltIcon from '@material-ui/icons/CameraAlt'
+
 function PhotoManager(props) {
   const [photo, setPhoto] = React.useState([])
   const [photoTaken, setPhotoTaken] = React.useState(false)
@@ -13,15 +20,17 @@ function PhotoManager(props) {
 
   return (
     <div>
-      <div>
-        <span style={{padding: '0px 12px'}}>
-          Capture Face:
-        </span>
-        <button 
-          onClick={onTakePhotoClick}
-        >
-          Take Photo
-        </button>
+      <div style={{display: 'flex', padding: '6px', justifyContent: 'center'}}>
+        <Card style={{display: 'flex', alignItems: 'center'}}>
+          <Typography variant="h6" style={{padding: '0px 12px'}}>
+            Take Photo:
+          </Typography>
+          <IconButton 
+            onClick={onTakePhotoClick}
+          >
+            <CameraAltIcon/>
+          </IconButton>
+        </Card>
       </div>
       <div>
         {
@@ -32,8 +41,13 @@ function PhotoManager(props) {
                 {
                   photoTaken
                     ?
-                      <div>
-                        <img id='photo' src={photo.dataUri} />
+                      <div style={{textAlign: 'center'}}>
+                        <img 
+                          id='photo'
+                          src={photo.dataUri} 
+                          width='180px'
+                          height='140px'
+                        />
                         <UploadManager
                           setPhotoTaken={setPhotoTaken}
                           photo={photo}
