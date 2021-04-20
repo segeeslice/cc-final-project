@@ -36,7 +36,7 @@ streamlined user experience across a wider audience.
 ### Team Members
 
 - Dustin Seger (segerde)
-- Jake Steuver (steuvej)
+- Jake Steuver (steuvejw)
 
 ### Agile Processes
 
