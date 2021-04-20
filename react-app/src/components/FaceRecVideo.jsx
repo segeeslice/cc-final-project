@@ -21,7 +21,6 @@ import {
 let detectObj = null
 
 const defaultProps = {
-    referenceImagePaths: [],
     width: '720px',
     height: '560px',
     videoPlaying: false,
@@ -31,7 +30,6 @@ const defaultProps = {
 
 function FaceRecVideo(props) {
   const {
-    referenceImagePaths,
     width,
     height,
     videoPlaying,
@@ -86,7 +84,6 @@ function FaceRecVideo(props) {
       loadFaceApiModels()
         .then(async() => {
           detectObj = await startFacialDetection(currVideoRef, {
-            referenceImagePaths,
             canvas: currCanvasRef,
           })
 
@@ -109,7 +106,7 @@ function FaceRecVideo(props) {
         detectObj = null
       }
     }
-  }, [videoPlaying, recPlaying, videoRef, canvasRef, referenceImagePaths, onLoadingChange])
+  }, [videoPlaying, recPlaying, videoRef, canvasRef, onLoadingChange])
 
   // Event handling for videoPlaying
   React.useEffect(() => {

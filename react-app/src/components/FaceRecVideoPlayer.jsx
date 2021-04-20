@@ -8,6 +8,7 @@
 import React from 'react'
 import FaceRecVideo from './FaceRecVideo'
 import FaceRecLoadingOverlay from './FaceRecLoadingOverlay'
+import PhotoManager from './PhotoManager'
 
 import {
   IconButton,
@@ -16,13 +17,6 @@ import {
 } from '@material-ui/core'
 import PlayIcon from '@material-ui/icons/PlayArrow'
 import StopIcon from '@material-ui/icons/Stop'
-
-//  Temporarily utilize hard-coded test images
-const referenceImagePaths = [
-  './images/Seg.png',
-  './images/Dustin.jpg',
-  './images/Mo.png'
-]
 
 function FaceRecVideoPlayer(props) {
   const [videoWidth, ] = React.useState('720px')
@@ -81,7 +75,6 @@ function FaceRecVideoPlayer(props) {
           videoPlaying
             ?
               <FaceRecVideo
-                referenceImagePaths={referenceImagePaths}
                 height={videoHeight}
                 width={videoWidth}
                 videoPlaying={videoPlaying}
@@ -158,7 +151,7 @@ function FaceRecVideoPlayer(props) {
         </Card>
       </div>
 
-      <div style={centeredRowStyle}>
+      <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
         <Card style={{display: 'flex', padding: '6px'}}>
           <Typography variant="h6" style={{padding: '0px 12px'}}>
             Facial Recognition:
@@ -186,6 +179,11 @@ function FaceRecVideoPlayer(props) {
             <StopIcon/>
           </IconButton>
         </Card>
+      </div>
+      <div style={centeredRowStyle}>
+        <PhotoManager
+          hide={loading}
+        />
       </div>
     </div>
   </>);
