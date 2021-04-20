@@ -23,8 +23,10 @@ export const setAsyncInterval = (func, ms) => {
       .then(() => {
         intervalObj.ref = setTimeout(intervalMethod, ms)
       })
-      .catch(() => {
+      .catch((e) => {
         clearAsyncInterval(intervalObj)
+        console.error('Error in async interval')
+        console.error(e)
       })
   }
 
