@@ -153,19 +153,6 @@ export function stopFacialDetection ({ canvas, faceInterval}) {
     clearCanvas(canvas)
 }
 
-function getFileName (fullPath) {
-    return fullPath.match(/[^/]*$/)[0]
-}
-
-function getFileExt (fileName) {
-    return fileName.match(/\..*$/)[0]
-}
-
-function removeFileExt (fileName) {
-    const ext = getFileExt(fileName)
-    return fileName.slice(0, fileName.length - ext.length)
-}
-
 // Load all reference images for facial recognition
 // Label for each image are simply taken from image name
 // NOTE: Could make this instead to load multiple references per image

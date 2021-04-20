@@ -3,7 +3,6 @@ import React from 'react'
 import { 
   TextField,
   IconButton,
-  Typography
 } from '@material-ui/core'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ClearIcon from '@material-ui/icons/Clear'

@@ -23,7 +23,7 @@ function InfoDialog (props) {
           Info
         </Typography>
 
-          <IconButton size="large" onClick={onClose} style={{color: 'white'}}>
+          <IconButton onClick={onClose} style={{color: 'white'}}>
             <ClearIcon fontSize="large"/>
           </IconButton>
         </Toolbar>

@@ -38,13 +38,6 @@ function FaceRecVideoPlayer(props) {
     position: 'relative'
   }
 
-  const centeredRowStyle = {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-
   const leftRowStyle = {
     width: '100%',
     display: 'flex',

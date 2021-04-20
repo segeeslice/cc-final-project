@@ -51,6 +51,7 @@ function PhotoManager(props) {
                         <div style={{textAlign: 'center'}}>
                           <img
                             id='photo'
+                            alt='User webcam screenshot'
                             src={photo.dataUri}
                             width='180px'
                             height='140px'

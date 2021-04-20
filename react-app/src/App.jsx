@@ -40,8 +40,8 @@ function App() {
           <Typography variant="h5" style={{ flexGrow: 1 }}>
             Live Facial Recognition
           </Typography>
-          <IconButton style={{color: 'white'}} size="large">
-            <HelpIcon fontSize="large" onClick={openInfoDialog}/>
+          <IconButton style={{color: 'white'}} onClick={openInfoDialog}>
+            <HelpIcon fontSize="large"/>
           </IconButton>
         </Toolbar>
       </AppBar>
