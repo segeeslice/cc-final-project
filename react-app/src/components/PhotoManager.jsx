@@ -12,6 +12,10 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt'
 function PhotoManager(props) {
   const [photo, setPhoto] = React.useState([])
   const [photoTaken, setPhotoTaken] = React.useState(false)
+  const {
+    photoButtonDisabled
+  } = props
+
 
   const onTakePhotoClick = () => {
     setPhoto(captureVideoFrame('video', 'png'))
@@ -27,6 +31,8 @@ function PhotoManager(props) {
           </Typography>
           <IconButton 
             onClick={onTakePhotoClick}
+            size="small"
+            disabled={photoButtonDisabled}
           >
             <CameraAltIcon/>
           </IconButton>
