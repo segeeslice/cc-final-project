@@ -6,6 +6,7 @@ import {
   Typography
 } from '@material-ui/core'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
+import ClearIcon from '@material-ui/icons/Clear'
 
 class UploadManager extends React.Component {
   constructor() {
@@ -25,6 +26,10 @@ class UploadManager extends React.Component {
 
   onUploadClick = () => {
     sessionStorage[this.state.name] = this.props.photo.dataUri
+    this.props.setPhotoTaken(false)
+  }
+
+  onCancelClick = () => {
     this.props.setPhotoTaken(false)
   }
 
@@ -50,6 +55,11 @@ class UploadManager extends React.Component {
           onClick={this.onUploadClick}
         >
           <ArrowUpwardIcon/>
+        </IconButton>
+        <IconButton
+          onClick={this.onCancelClick}
+        >
+          <ClearIcon/>
         </IconButton>
         
       </div>
