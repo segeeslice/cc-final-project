@@ -10,14 +10,15 @@ function App() {
     height: '100vh',
     display: 'flex',
     justifyContent: 'center',
+    alignContent: 'center',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    alignContent: 'flex-start',
   }
 
   return (<>
     <div style={bodyStyle}>
-      <FaceRecVideoPlayer/>
+      <div>
+        <FaceRecVideoPlayer/>
+      </div>
     </div>
   </>);
 }

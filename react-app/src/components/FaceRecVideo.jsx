@@ -55,7 +55,8 @@ function FaceRecVideo(props) {
         position: 'absolute',
         // Canvas clearing can hit timing issue with the interval, leaving a lingering box
         // Just in case canvas doesn't stop in time, put the video in front of it to hide it
-        zIndex: recPlaying ? -1 : 1,
+        zIndex: recPlaying ? 1 : 3,
+        objectFit: 'cover',
       }}
     ></video>
   )
@@ -67,6 +68,7 @@ function FaceRecVideo(props) {
       height={height}
       style={{
         position: 'absolute',
+        zIndex: 2,
       }}
     ></canvas>
   )
