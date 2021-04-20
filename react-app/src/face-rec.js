@@ -70,6 +70,16 @@ function getOverlappingCanvas(videoEl) {
     return canvas
 }
 
+// No easy way to detect if video (or other media element) is playing
+// Check a bunch of configurations to make sure everything is in place
+// https://stackoverflow.com/questions/6877403/how-to-tell-if-a-video-element-is-currently-playing
+function checkVideoPlaying (videoEl) {
+    return !!(videoEl.currentTime > 0 &&
+              !videoEl.paused &&
+              !videoEl.ended &&
+              videoEl.readyState > 2);
+}
+
 // Start facial detection on a video element with the given overlapping canvas
 export async function startFacialDetection(videoEl, opts) {
     const displaySize = { width: videoEl.width, height: videoEl.height }
@@ -80,29 +90,42 @@ export async function startFacialDetection(videoEl, opts) {
         canvas.style["position"] = "absolute"
     }
 
-    console.log('Loading reference images...')
     const labeledFaceDescriptors = await loadReferenceImages()
+    const faceMatchingActive = labeledFaceDescriptors.length > 0
+
     console.log('Making face matcher system...')
-    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+
+    // Can't make FaceMatcher if there are no descriptors
+    const faceMatcher = faceMatchingActive ?
+          new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6) :
+          null
+
     console.log('Complete. Launching live facial detection...')
+
+    // Detect via a smaller, faster (less accurate) model
+    const detector = new faceapi.TinyFaceDetectorOptions()
 
     // Can later be cancelled via clearAsyncInterval
     let faceInterval = setAsyncInterval(async () => {
-        // Detect via a smaller, faster (less accurate) model
-        const detector = new faceapi.TinyFaceDetectorOptions()
+        // detectAllFaces below throws uncatchable error if video not playing
+        const videoPlaying = checkVideoPlaying(videoEl)
+        if (!videoPlaying) return
 
         // Get all faces in the frame
         // Descriptors are required for facial recognition, and
         // landmarks are required for descriptors
-        const detections = await faceapi.detectAllFaces(videoEl, detector)
-                                        .withFaceLandmarks()
-                                        .withFaceDescriptors()
+        let detections = await faceapi.detectAllFaces(videoEl, detector)
+                                      .withFaceLandmarks()
+                                      .withFaceDescriptors()
 
         // Resize the facial detections to fit the current display
         const resizedDetections = faceapi.resizeResults(detections, displaySize)
 
         // Do facial matching against given face matching system
-        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        // If no facial matching active, mimic how face matching handles unknown faces
+        const results = faceMatchingActive ?
+              resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor)) :
+              resizedDetections.map(d => 'unknown')
 
         // Draw each found face with our guess as to who it is
         clearCanvas(canvas)
