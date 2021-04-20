@@ -18,13 +18,6 @@ import {
 import PlayIcon from '@material-ui/icons/PlayArrow'
 import StopIcon from '@material-ui/icons/Stop'
 
-//  Temporarily utilize hard-coded test images
-const referenceImagePaths = [
-  './images/Seg.png',
-  './images/Dustin.jpg',
-  './images/Mo.png'
-]
-
 function FaceRecVideoPlayer(props) {
   const [videoWidth, ] = React.useState('720px')
   const [videoHeight, ] = React.useState('560px')
@@ -82,7 +75,6 @@ function FaceRecVideoPlayer(props) {
           videoPlaying
             ?
               <FaceRecVideo
-                referenceImagePaths={referenceImagePaths}
                 height={videoHeight}
                 width={videoWidth}
                 videoPlaying={videoPlaying}

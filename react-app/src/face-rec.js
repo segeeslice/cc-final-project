@@ -73,7 +73,7 @@ function getOverlappingCanvas(videoEl) {
 // Start facial detection on a video element with the given overlapping canvas
 export async function startFacialDetection(videoEl, opts) {
     const displaySize = { width: videoEl.width, height: videoEl.height }
-    let { referenceImagePaths, canvas } = opts
+    let { canvas } = opts
 
     if (canvas == null) {
         canvas = getOverlappingCanvas(videoEl)
@@ -81,7 +81,7 @@ export async function startFacialDetection(videoEl, opts) {
     }
 
     console.log('Loading reference images...')
-    const labeledFaceDescriptors = await loadReferenceImages(referenceImagePaths)
+    const labeledFaceDescriptors = await loadReferenceImages()
     console.log('Making face matcher system...')
     const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
     console.log('Complete. Launching live facial detection...')
@@ -145,39 +145,17 @@ function removeFileExt (fileName) {
 
 // Load all reference images for facial recognition
 // Label for each image are simply taken from image name
-// paths is a list of all image paths to load
 // NOTE: Could make this instead to load multiple references per image
 //       However this would probably require this to be ran as a Node app
-async function loadReferenceImages (paths) {
+async function loadReferenceImages () {
     const descriptors = []
 
-    // For reference images already in public folder
-    for (const i in paths) {
-        const path = paths[i]
-        try {
-            // Fetch the image and detect the most prominant face
-            const img = await faceapi.fetchImage(path)
-            const detections = await faceapi.detectSingleFace(img)
-                                            .withFaceLandmarks()
-                                            .withFaceDescriptor()
-
-            // Label the descriptor and keep track of it
-            const label = removeFileExt(getFileName(path))
-            const labeledDescriptor = new faceapi.LabeledFaceDescriptors(label, [detections.descriptor])
-            descriptors.push(labeledDescriptor)
-
-        } catch (e) {
-            console.log(`Could not load image at ${path}: ${e}`)
-        }
-    }
-
-    // For images uploaded to localStorage
-
-    for (var k = 0; k < localStorage.length; k++) {
-        const label = localStorage.key(k)
+    // For images uploaded to sessionStorage
+    for (var k = 0; k < sessionStorage.length; k++) {
+        const label = sessionStorage.key(k)
         
         try {
-            const img = await faceapi.fetchImage(localStorage[label])
+            const img = await faceapi.fetchImage(sessionStorage[label])
             const detections = await faceapi.detectSingleFace(img)
                                             .withFaceLandmarks()
                                             .withFaceDescriptor()
