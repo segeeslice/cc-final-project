@@ -26,27 +26,21 @@ class UploadManager extends React.Component {
 
   onUploadClick = () => {
     sessionStorage[this.state.name] = this.props.photo.dataUri
-    this.props.setPhotoTaken(false)
+    this.props.onUpload()
   }
 
   onCancelClick = () => {
-    this.props.setPhotoTaken(false)
+    this.props.onUpload()
   }
 
   render() {
     return (
       <div style={{display: 'flex', padding: '12px 12px', alignItems: 'center'}}>
-        <span>
-          <label htmlFor='name'>
-            <Typography variant="h6" style={{padding: '0px 12px'}}>
-              Name:
-            </Typography>
-          </label>
-        </span>
         <TextField
           id='name'
           name='name'
           variant='outlined'
+          label='Name'
           value={this.state.name}
           onChange={this.onInputChange}
         />
