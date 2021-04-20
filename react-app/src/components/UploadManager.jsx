@@ -45,8 +45,7 @@ class UploadManager extends React.Component {
         </span>
         <TextField
           id='name'
-          name='name' 
-          type='text'
+          name='name'
           variant='outlined'
           value={this.state.name}
           onChange={this.onInputChange}
