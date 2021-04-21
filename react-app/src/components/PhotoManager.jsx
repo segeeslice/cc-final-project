@@ -10,59 +10,69 @@ import {
 import CameraAltIcon from '@material-ui/icons/CameraAlt'
 
 function PhotoManager(props) {
-  const [photo, setPhoto] = React.useState([])
-  const [photoTaken, setPhotoTaken] = React.useState(false)
+  const {
+    photoButtonDisabled
+  } = props
+
+  const [photo, setPhoto] = React.useState(null)
+  const photoTaken = photo != null
 
   const onTakePhotoClick = () => {
     setPhoto(captureVideoFrame('video', 'png'))
-    setPhotoTaken(true)
   }
 
   return (
-    <div>
-      <div style={{display: 'flex', padding: '6px', justifyContent: 'center'}}>
-        <Card style={{display: 'flex', alignItems: 'center'}}>
+    <Card>
+      <div style={{display: 'flex', padding: '6px', alignItems: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center'}}>
           <Typography variant="h6" style={{padding: '0px 12px'}}>
             Take Photo:
           </Typography>
           <IconButton 
             onClick={onTakePhotoClick}
+            size="small"
+            disabled={photoButtonDisabled}
           >
             <CameraAltIcon/>
           </IconButton>
-        </Card>
+        </div>
       </div>
       <div>
         {
-          photo
+          photoTaken
             ?
               // The capture worked, so display the photo
-              <div>
-                {
-                  photoTaken
-                    ?
-                      <div style={{textAlign: 'center'}}>
-                        <img 
-                          id='photo'
-                          src={photo.dataUri} 
-                          width='180px'
-                          height='140px'
-                        />
-                        <UploadManager
-                          setPhotoTaken={setPhotoTaken}
-                          photo={photo}
-                        />
-                      </div>
-                    :
-                      null
-                }
-              </div> 
-            :
-              // Capture did not work, so display this message to the user
-              <h4>Photo not captured properly. Please try again.</h4>
+              <>
+                <hr style={{margin: 0, padding: 0}}/>
+                <div style={{padding: '6px'}}>
+                  {
+                    photo
+                      ?
+                        <div style={{textAlign: 'center'}}>
+                          <img
+                            id='photo'
+                            alt='User webcam screenshot'
+                            src={photo.dataUri}
+                            width='180px'
+                            height='140px'
+                          />
+                          <UploadManager
+                            onUpload={() => setPhoto(null)}
+                            photo={photo}
+                          />
+                        </div>
+                      :
+                        <p style={{padding: '12px', paddingTop: '0px', margin: '0px'}}>
+                        <strong>Photo not captured properly. Please try again.</strong>
+                        </p>
+                  }
+                </div>
+              </>
+          :
+            null
         }
       </div>
-    </div>
+    </Card>
   )
 }
 

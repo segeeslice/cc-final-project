@@ -32,17 +32,16 @@ function FaceRecVideoPlayer(props) {
     width: '100%',
     height: '100%',
     display: 'inline-flex',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    flexWrap: 'wrap',
     alignContent: 'center',
     position: 'relative'
   }
 
-  const centeredRowStyle = {
+  const leftRowStyle = {
     width: '100%',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'start',
     alignItems: 'center',
   }
 
@@ -69,11 +68,11 @@ function FaceRecVideoPlayer(props) {
   return (<>
     <div style={rootStyle}>
       {/* Video playback */}
-      <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
+      <div style={{display: 'inline-flex', padding: '6px'}}>
         <Card style={{position: 'relative'}}>
-        {
-          videoPlaying
-            ?
+          {
+            videoPlaying
+              ?
               <FaceRecVideo
                 height={videoHeight}
                 width={videoWidth}
@@ -82,108 +81,119 @@ function FaceRecVideoPlayer(props) {
                 onLoadingChange={onLoadingChange}
               />
             :
-              <div
+            <div
+              style={{
+                height: videoHeight,
+                width: videoWidth,
+                backgroundColor: 'gray',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                variant="h4"
                 style={{
-                  height: videoHeight,
-                  width: videoWidth,
-                  backgroundColor: 'gray',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  textShadow: '0px 0px 8px #000000',
+                  color: 'white'
                 }}
               >
-                <Typography
-                  variant="h4"
-                  style={{
-                    textShadow: '0px 0px 8px #000000',
-                    color: 'white'
-                  }}
-                >
-                  [ Video stopped ]
-                </Typography>
-              </div>
-        }
+                [ Video stopped ]
+              </Typography>
+            </div>
+          }
+
+          <div
+            style={{
+              zIndex: 1000,
+              position: 'absolute',
+              height: videoHeight,
+              width: videoWidth,
+              top: 0,
+            }}
+          >
+            <FaceRecLoadingOverlay
+              hide={!loading}
+            />
+          </div>
         </Card>
       </div>
+
 
       <div
         style={{
-          zIndex: 1000,
-          position: 'absolute',
-          height: videoHeight,
-          width: videoWidth,
-          top: 0,
+          display: 'flex',
+          flexWrap: 'wrap',
+          maxWidth: '350px',
+          padding: '6px',
         }}
       >
-        <FaceRecLoadingOverlay
-          hide={!loading}
-        />
-      </div>
+        {/* Button panel action area */}
+        <div style={{...leftRowStyle, paddingBottom: '12px'}}>
+          <Card style={{display: 'flex', padding: '6px', alignItems: 'center'}}>
+            <Typography variant="h6" style={{padding: '0px 12px'}}>
+              Video Stream:
+            </Typography>
+            <IconButton
+              onClick={onStartVideoClick}
+              disabled={loading}
+              size="small"
+              aria-label="play video stream"
+              style={{
+                color: !loading && videoPlaying && "green"
+              }}
+            >
+              <PlayIcon/>
+            </IconButton>
+            <IconButton
+              onClick={onStopVideoClick}
+              disabled={loading}
+              size="small"
+              aria-label="stop video stream"
+              style={{
+                color: !loading && !videoPlaying && "red"
+              }}
+            >
+              <StopIcon/>
+            </IconButton>
+          </Card>
+        </div>
 
-      {/* Button panel action area */}
-      <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
-        <Card style={{display: 'flex', padding: '6px', alignItems: 'center'}}>
-          <Typography variant="h6" style={{padding: '0px 12px'}}>
-            Video Stream:
-          </Typography>
-          <IconButton
-            onClick={onStartVideoClick}
-            disabled={loading}
-            size="small"
-            aria-label="play video stream"
-            style={{
-              color: !loading && videoPlaying && "green"
-            }}
-          >
-            <PlayIcon/>
-          </IconButton>
-          <IconButton
-            onClick={onStopVideoClick}
-            disabled={loading}
-            size="small"
-            aria-label="stop video stream"
-            style={{
-              color: !loading && !videoPlaying && "red"
-            }}
-          >
-            <StopIcon/>
-          </IconButton>
-        </Card>
-      </div>
+        <div style={{...leftRowStyle, paddingBottom: '12px'}}>
+          <Card style={{display: 'flex', padding: '6px'}}>
+            <Typography variant="h6" style={{padding: '0px 12px'}}>
+              Facial Recognition:
+            </Typography>
+            <IconButton
+              onClick={onStartRecClick}
+              disabled={loading}
+              size="small"
+              aria-label="play facial recognition box"
+              style={{
+                color: !loading && recPlaying && "green"
+              }}
+            >
+              <PlayIcon/>
+            </IconButton>
+            <IconButton
+              onClick={onStopRecClick}
+              disabled={loading}
+              size="small"
+              aria-label="stop facial recognition box"
+              style={{
+                color: !loading && !recPlaying && "red"
+              }}
+            >
+              <StopIcon/>
+            </IconButton>
+          </Card>
+        </div>
 
-      <div style={{...centeredRowStyle, paddingBottom: '12px'}}>
-        <Card style={{display: 'flex', padding: '6px'}}>
-          <Typography variant="h6" style={{padding: '0px 12px'}}>
-            Facial Recognition:
-          </Typography>
-          <IconButton
-            onClick={onStartRecClick}
-            disabled={loading}
-            size="small"
-            aria-label="play facial recognition box"
-            style={{
-              color: !loading && recPlaying && "green"
-            }}
-          >
-            <PlayIcon/>
-          </IconButton>
-          <IconButton
-            onClick={onStopRecClick}
-            disabled={loading}
-            size="small"
-            aria-label="stop facial recognition box"
-            style={{
-              color: !loading && !recPlaying && "red"
-            }}
-          >
-            <StopIcon/>
-          </IconButton>
-        </Card>
-      </div>
-      <div style={centeredRowStyle}>
-        <PhotoManager
-          hide={loading}
-        />
+        <div style={leftRowStyle}>
+          <PhotoManager
+            photoButtonDisabled={!videoPlaying || loading}
+          />
+        </div>
       </div>
     </div>
   </>);
